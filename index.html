@@ -13,16 +13,22 @@
         font-family: Arial, sans-serif;
     }
 
-    video {
-        position: absolute;
-        width: 100vw;
-        height: 100vh;
+    /* CAMERA NHỎ Ở GÓC */
+    #camera {
+        position: fixed;
+        width: 180px;
+        height: 260px;
+        right: 20px;
+        bottom: 20px;
         object-fit: cover;
-        transition: transform 0.8s ease;
+        border-radius: 12px;
+        transition: transform 0.8s ease, width 0.8s ease, height 0.8s ease, right 0.8s ease, bottom 0.8s ease;
+        z-index: 10;
     }
 
+    /* TEXT CƯỜI */
     #smileText {
-        position: absolute;
+        position: fixed;
         bottom: 40px;
         width: 100%;
         text-align: center;
@@ -32,15 +38,19 @@
         transition: opacity 0.8s ease;
         text-shadow: 0 0 10px black;
         pointer-events: none;
+        z-index: 50;
     }
 </style>
 </head>
 
 <body>
+
+    <!-- Camera nhỏ ở góc -->
     <video id="camera" autoplay muted playsinline></video>
 
     <!-- Text xuất hiện khi cười -->
     <div id="smileText">Look at that smile… it used to warm my heart, and I truly hope you keep it with you always</div>
+
 
 <script>
     const camera = document.getElementById("camera");
@@ -50,72 +60,74 @@
     navigator.mediaDevices.getUserMedia({ video: true })
         .then(stream => camera.srcObject = stream);
 
-    // Fake detection object (bạn sẽ gắn vào AI real)
     let isSmiling = false;
 
-    // Hàm kích hoạt khi CƯỜI
+    // -------------------------
+    // HIỆU ỨNG KHI CƯỜI
+    // -------------------------
     function onSmile() {
-        if (isSmiling) return; 
+        if (isSmiling) return;
         isSmiling = true;
 
-        camera.style.transform = "scale(1.6)";
+        // Zoom camera ra giữa màn hình
+        camera.style.width = "90vw";
+        camera.style.height = "90vh";
+        camera.style.right = "50%";
+        camera.style.bottom = "50%";
+        camera.style.transform = "translate(50%, 50%) scale(1.05)";
+
+        // Text hiện ra
         smileText.style.opacity = 1;
     }
 
-    // Hàm kích hoạt khi KHÔNG CƯỜI
+    // -------------------------
+    // HIỆU ỨNG KHI HẾT CƯỜI
+    // -------------------------
     function onSmileEnd() {
         if (!isSmiling) return;
         isSmiling = false;
 
+        // Thu camera về góc
+        camera.style.width = "180px";
+        camera.style.height = "260px";
+        camera.style.right = "20px";
+        camera.style.bottom = "20px";
         camera.style.transform = "scale(1)";
+
+        // Ẩn text
         smileText.style.opacity = 0;
     }
 
-    // ------------------------------
-    // GIỮ NGUYÊN TOÀN BỘ HIỆU ỨNG CŨ
-    // ------------------------------
-
+    // -------------------------
+    // Swipe left / right (giữ nguyên)
+    // -------------------------
     let touchStartX = 0;
-
     document.addEventListener("touchstart", e => {
         touchStartX = e.touches[0].clientX;
     });
-
     document.addEventListener("touchend", e => {
         let dx = e.changedTouches[0].clientX - touchStartX;
-        if (dx > 50) {
-            console.log("Vuốt phải – ảnh kế");
-        } else if (dx < -50) {
-            console.log("Vuốt trái – ảnh trước");
-        }
+        if (dx > 50) console.log("Vuốt phải – ảnh kế");
+        else if (dx < -50) console.log("Vuốt trái – ảnh trước");
     });
 
     // Nắm tay → cây
-    function onHandClosed() {
-        console.log("Nắm tay → hiện cây");
-    }
+    function onHandClosed() { console.log("Nắm tay → hiện cây"); }
 
     // Mở tay → explode
-    function onHandOpen() {
-        console.log("Mở tay → explode");
-    }
+    function onHandOpen() { console.log("Mở tay → explode"); }
 
-    // ❤️ → i love you
-    function onHeartGesture() {
-        console.log("Heart → I love you");
-    }
+    // ❤️ → I love you
+    function onHeartGesture() { console.log("Heart → I love you"); }
 
-    // -------------------------------------
-    // DEMO kiểm tra cười (bạn gắn AI vào đây)
-    // -------------------------------------
+    // -------------------------
+    // Demo fake smile detection
+    // -------------------------
     setInterval(() => {
-        // Giả lập: random 50% cười
         const smile = Math.random() > 0.5;
-
-        if (smile) onSmile();
-        else onSmileEnd();
+        smile ? onSmile() : onSmileEnd();
     }, 1200);
-
 </script>
+
 </body>
 </html>
