@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Camera Effects</title>
-
 <style>
     body {
         margin: 0;
@@ -13,120 +12,69 @@
         font-family: Arial, sans-serif;
     }
 
-    /* CAMERA NHỎ Ở GÓC */
+    /* Camera nhỏ ở góc như cũ */
     #camera {
-        position: fixed;
-        width: 180px;
-        height: 260px;
-        right: 20px;
+        position: absolute;
+        width: 200px;
+        height: 150px;
         bottom: 20px;
+        right: 20px;
+        border-radius: 10px;
         object-fit: cover;
-        border-radius: 12px;
-        transition: transform 0.8s ease, width 0.8s ease, height 0.8s ease, right 0.8s ease, bottom 0.8s ease;
-        z-index: 10;
-    }
-
-    /* TEXT CƯỜI */
-    #smileText {
-        position: fixed;
-        bottom: 40px;
-        width: 100%;
-        text-align: center;
-        font-size: 24px;
-        color: white;
-        opacity: 0;
-        transition: opacity 0.8s ease;
-        text-shadow: 0 0 10px black;
-        pointer-events: none;
-        z-index: 50;
+        border: 2px solid white;
     }
 </style>
 </head>
-
 <body>
 
-    <!-- Camera nhỏ ở góc -->
+    <!-- Camera nhỏ -->
     <video id="camera" autoplay muted playsinline></video>
-
-    <!-- Text xuất hiện khi cười -->
-    <div id="smileText">Look at that smile… it used to warm my heart, and I truly hope you keep it with you always</div>
-
 
 <script>
     const camera = document.getElementById("camera");
-    const smileText = document.getElementById("smileText");
 
     // Mở camera
     navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => camera.srcObject = stream);
+        .then(stream => camera.srcObject = stream)
+        .catch(err => console.log("Camera error:", err));
 
-    let isSmiling = false;
+    // ------------------------------
+    // GIỮ NGUYÊN CÁC HIỆU ỨNG CŨ
+    // ------------------------------
 
-    // -------------------------
-    // HIỆU ỨNG KHI CƯỜI
-    // -------------------------
-    function onSmile() {
-        if (isSmiling) return;
-        isSmiling = true;
-
-        // Zoom camera ra giữa màn hình
-        camera.style.width = "90vw";
-        camera.style.height = "90vh";
-        camera.style.right = "50%";
-        camera.style.bottom = "50%";
-        camera.style.transform = "translate(50%, 50%) scale(1.05)";
-
-        // Text hiện ra
-        smileText.style.opacity = 1;
-    }
-
-    // -------------------------
-    // HIỆU ỨNG KHI HẾT CƯỜI
-    // -------------------------
-    function onSmileEnd() {
-        if (!isSmiling) return;
-        isSmiling = false;
-
-        // Thu camera về góc
-        camera.style.width = "180px";
-        camera.style.height = "260px";
-        camera.style.right = "20px";
-        camera.style.bottom = "20px";
-        camera.style.transform = "scale(1)";
-
-        // Ẩn text
-        smileText.style.opacity = 0;
-    }
-
-    // -------------------------
-    // Swipe left / right (giữ nguyên)
-    // -------------------------
     let touchStartX = 0;
+
     document.addEventListener("touchstart", e => {
         touchStartX = e.touches[0].clientX;
     });
+
     document.addEventListener("touchend", e => {
         let dx = e.changedTouches[0].clientX - touchStartX;
-        if (dx > 50) console.log("Vuốt phải – ảnh kế");
-        else if (dx < -50) console.log("Vuốt trái – ảnh trước");
+
+        if (dx > 50) {
+            console.log("Vuốt phải – ảnh kế");
+        } else if (dx < -50) {
+            console.log("Vuốt trái – ảnh trước");
+        }
     });
 
-    // Nắm tay → cây
-    function onHandClosed() { console.log("Nắm tay → hiện cây"); }
+    // Nắm tay → hiện cây
+    function onHandClosed() {
+        console.log("✊ Nắm tay → hiện cây");
+    }
 
     // Mở tay → explode
-    function onHandOpen() { console.log("Mở tay → explode"); }
+    function onHandOpen() {
+        console.log("🖐 Mở tay → explode");
+    }
 
     // ❤️ → I love you
-    function onHeartGesture() { console.log("Heart → I love you"); }
+    function onHeartGesture() {
+        console.log("❤️ → I love you");
+    }
 
-    // -------------------------
-    // Demo fake smile detection
-    // -------------------------
-    setInterval(() => {
-        const smile = Math.random() > 0.5;
-        smile ? onSmile() : onSmileEnd();
-    }, 1200);
+    // (Không còn smile detection nữa)
+
 </script>
 
 </body>
