@@ -12,22 +12,20 @@
         font-family: Arial, sans-serif;
     }
 
-    /* Camera nhỏ ở góc như cũ */
-    #camera {
+    /* Camera nhỏ góc màn hình như bản cũ */
+    video {
         position: absolute;
-        width: 200px;
-        height: 150px;
-        bottom: 20px;
+        width: 180px;
+        height: 320px;
         right: 20px;
-        border-radius: 10px;
+        bottom: 20px;
+        border-radius: 12px;
         object-fit: cover;
-        border: 2px solid white;
     }
 </style>
 </head>
 <body>
 
-    <!-- Camera nhỏ -->
     <video id="camera" autoplay muted playsinline></video>
 
 <script>
@@ -35,12 +33,11 @@
 
     // Mở camera
     navigator.mediaDevices.getUserMedia({ video: true })
-        .then(stream => camera.srcObject = stream)
-        .catch(err => console.log("Camera error:", err));
+        .then(stream => camera.srcObject = stream);
 
-    // ------------------------------
-    // GIỮ NGUYÊN CÁC HIỆU ỨNG CŨ
-    // ------------------------------
+    // ============================
+    // HIỆU ỨNG CŨ GIỮ NGUYÊN
+    // ============================
 
     let touchStartX = 0;
 
@@ -52,30 +49,27 @@
         let dx = e.changedTouches[0].clientX - touchStartX;
 
         if (dx > 50) {
-            console.log("Vuốt phải – ảnh kế");
+            console.log("Vuốt phải → ảnh kế");
         } else if (dx < -50) {
-            console.log("Vuốt trái – ảnh trước");
+            console.log("Vuốt trái → ảnh trước");
         }
     });
 
-    // Nắm tay → hiện cây
+    // Nắm tay → cây
     function onHandClosed() {
-        console.log("✊ Nắm tay → hiện cây");
+        console.log("Nắm tay → hiện cây");
     }
 
     // Mở tay → explode
     function onHandOpen() {
-        console.log("🖐 Mở tay → explode");
+        console.log("Mở tay → explode");
     }
 
     // ❤️ → I love you
     function onHeartGesture() {
-        console.log("❤️ → I love you");
+        console.log("Heart → I love you");
     }
 
-    // (Không còn smile detection nữa)
-
 </script>
-
 </body>
 </html>
